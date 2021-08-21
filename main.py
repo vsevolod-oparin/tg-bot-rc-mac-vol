@@ -34,7 +34,8 @@ logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser(description='TF Mac Volume RC Bot.')
 parser.add_argument('--token', type=str, default='token', help='tg token')
-parser.add_argument('--step', type=int, default=5, help='tg token')
+parser.add_argument('--step', type=int, default=5, help='volume step')
+parser.add_argument('--user', type=str, default='', help='tg account of the owner')
 args = parser.parse_args()
 
 MAX_VOLUME = 100
@@ -85,11 +86,17 @@ def status_update(update) -> None:
 # context.
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
-    context.bot.send_message(
-        text=status_msg(),
-        chat_id=update.message.chat_id,
-        reply_markup=keyboard_markup
-    )
+    if update.message.chat.username != args.user:
+        context.bot.send_message(
+            text='Sorry, but you are not an owner of this bot.',
+            chat_id=update.message.chat_id,
+        )
+    else:
+        context.bot.send_message(
+            text=status_msg(),
+            chat_id=update.message.chat_id,
+            reply_markup=keyboard_markup
+        )
 
 
 def up(update: Update, context: CallbackContext) -> None:
@@ -133,6 +140,8 @@ def status(update: Update, context: CallbackContext):
 def button(update: Update, context: CallbackContext) -> None:
     """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
+    if update.callback_query.message.chat.username != args.user:
+        return
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     query.answer()
@@ -166,10 +175,6 @@ def main() -> None:
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("up", up))
-    dispatcher.add_handler(CommandHandler("down", down))
-    dispatcher.add_handler(CommandHandler("mute", mute))
-    dispatcher.add_handler(CommandHandler("status", status))
 
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
 
