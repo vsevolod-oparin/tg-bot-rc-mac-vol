@@ -13,7 +13,7 @@ $> ./venv/bin/pip3 install -r requirements.txt
 ```
 - Then just run the bot on your mac.
 ```
-$> ./venv/bin/python3 -- main.py
+$> ./venv/bin/python3 main.py
 ```
 - I personally prefer to use pm2:
 ```
