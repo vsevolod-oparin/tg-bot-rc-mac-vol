@@ -1,0 +1,5 @@
+token_secret
+
+# work folders
+venv/
+.idea/
