@@ -4,7 +4,7 @@ Simple Bot to RC your mac volume via Telegram.
 
 ### Installation
 
-- Fetch the token from the TG Bot Father and put it into `./token` file.
+- Fetch the token from the [TG Bot Father](https://t.me/BotFather) and put it into `./token` file.
 - Prepare the environment:
 ```
 $> python3 -m venv venv
