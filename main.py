@@ -17,6 +17,7 @@ Use the buttons to control the bot.
 Author: Seva Oparin
 """
 
+import argparse
 import logging
 
 import applescript
@@ -29,11 +30,15 @@ from typing import Tuple
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
-
 logger = logging.getLogger(__name__)
 
-STEP = 5
+parser = argparse.ArgumentParser(description='TF Mac Volume RC Bot.')
+parser.add_argument('--token', type=str, default='token', help='tg token')
+parser.add_argument('--step', type=int, default=5, help='tg token')
+args = parser.parse_args()
+
 MAX_VOLUME = 100
+
 
 def settings() -> Tuple[str, bool]:
     '''
@@ -90,7 +95,7 @@ def start(update: Update, context: CallbackContext) -> None:
 def up(update: Update, context: CallbackContext) -> None:
     """Increase volume by 5%."""
     global volume
-    volume = min(volume + STEP, MAX_VOLUME)
+    volume = min(volume + args.step, MAX_VOLUME)
     applescript.run(f"set volume output volume {volume}")
     status_update(update)
 
@@ -98,7 +103,7 @@ def up(update: Update, context: CallbackContext) -> None:
 def down(update: Update, context: CallbackContext) -> None:
     """Decrease volume by 5%."""
     global volume
-    volume = max(volume - STEP, 0)
+    volume = max(volume - args.step, 0)
     applescript.run(f"set volume output volume {volume}")
     status_update(update)
 
@@ -152,7 +157,7 @@ def button(update: Update, context: CallbackContext) -> None:
 def main() -> None:
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    with open('token', 'r') as f:
+    with open(args.token, 'r') as f:
         token = f.read()
     updater = Updater(token)
 
